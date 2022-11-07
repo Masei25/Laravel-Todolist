@@ -92,6 +92,10 @@
     @section('script')
 
     <script>
+        $(document).ready(function($) {
+            $('.modal').modal({backdrop: 'static', keyboard: false}) 
+        });
+        
         window.addEventListener('close-modal', event => {
             $('#addTaskModal').modal('hide');
             $('#editTaskModal').modal('hide');

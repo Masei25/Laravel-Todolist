@@ -193,7 +193,7 @@
                     </div>
                     <div class="px-4 py-3 text-right">
                         <button type="button" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
-                            data-bs-dismiss="modal"><i class="fas fa-times"></i>
+                            data-bs-dismiss="modal" wire:click="close"><i class="fas fa-times"></i>
                             Cancel</button>
                         <button class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"><i
                                 class="fas fa-plus"></i> Add </button>
@@ -215,15 +215,16 @@
                     @csrf
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <label>Task</label>
-                        <input name="task_name" type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3"
+                        <input type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3"
                             wire:model="task_name" />
                         <label>Due Date</label>
-                        <input name="date" type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
+                        <input type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
                             wire:model="date" />
                         <label>Assign Task</label>
-                        <select multiple wire:model="user" id="user" class="form-control">
+                        <select multiple class="form-control" wire:model="user">
+                           
                             @foreach ($users as $key => $value)
-                                <option value="{{ $value->name }}" wire:key="item-{{ $key }}">
+                                <option value="{{ $value->name }}">
                                     {{ $value->name }}
                                 </option>
                             @endforeach
@@ -232,7 +233,7 @@
 
                     <div class="px-4 py-3 text-right">
                         <button type="button" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
-                            data-bs-dismiss="modal"><i class="fas fa-times"></i>
+                            data-bs-dismiss="modal" wire:click="close"><i class="fas fa-times"></i>
                             Cancel</button>
                         <button class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"><i
                                 class="fas fa-plus"></i> Update </button>
