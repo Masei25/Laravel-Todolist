@@ -15,8 +15,6 @@
                 <div class="text-red-400">{{ $error }}</div>
             @endforeach
 
-            @include('layouts.alert')
-
             <livewire:tasks />
 
         </div>

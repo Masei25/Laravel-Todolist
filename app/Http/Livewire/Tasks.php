@@ -17,20 +17,16 @@ class Tasks extends Component
     public $task;
     
     public $task_id, $task_name, $date, $status, $assigned_to;
-    public $user, $users;
+    public $user;
+    protected $listeners = ['refresh' => '$refresh'];
 
     protected function rules()
     {
         return [
             'task_name' => 'required|string',
-            'date' => 'required|date'
+            'date' => 'required|date',
+            'user' => 'sometimes'
         ];
-    }
-
-    public function mount()
-    {
-        $this->users = User::all();
-        dd($this->users);
     }
 
     public function updated($propertyName)
@@ -50,16 +46,22 @@ class Tasks extends Component
 
         session()->flash('message','Student Added Successfully');
         $this->resetInput();
+        $this->emit('refresh');
         $this->dispatchBrowserEvent('close-modal');
     }
 
     public function editTask(int $task_id)
     {
         $task = Todolist::find($task_id);
+        // dd($task);
         
         $this->task_id = $task->id;
         $this->task_name = $task->task_name;
         $this->date = $task->end_date;
+        $this->user = $task->assigned_to;
+
+
+        $this->emit('refresh');
 
     }
 
@@ -67,7 +69,7 @@ class Tasks extends Component
     {
         $validatedData = $this->validate();
         $assigned = $this->user;
-        $assigned = implode(", ", $assigned);;
+        $assigned = implode(", ", $assigned);
 
         Todolist::where('id', $this->task_id)->update([
             'task_name' => $validatedData['task_name'],
@@ -141,10 +143,13 @@ class Tasks extends Component
                 ->when($search, function(Builder $query) use ($search){
                     $query->where('task_name', 'like', '%' . $search . '%');
                 })
+                ->where('user_id', Auth::user()->id)
                 ->orderBy('status', 'desc')
                 ->paginate(10)
                 ->withQueryString();
-       
-        return view('livewire.tasks', compact('tasks'));
+        
+        $users = User::all();
+        
+        return view('livewire.tasks', compact('tasks', 'users'));
     }
 }

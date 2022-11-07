@@ -104,7 +104,7 @@
                             @endif
 
                             <td class="py-2 px-2 border-r whitespace-no-wrap border-b text-center border-gray-100">
-                                {{$task->assigned_to ?? ''}}
+                                {{$task->assigned_to ?? 'Not Yet Assigned'}}
                             </td>
 
                             <td
@@ -221,9 +221,9 @@
                         <input name="date" type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
                             wire:model="date" />
                         <label>Assign Task</label>
-                        <select multiple name="user[]" wire:model="user" id="user" class="form-control">
+                        <select multiple wire:model="user" id="user" class="form-control">
                             @foreach ($users as $key => $value)
-                                <option value="{{ $value->name }}" >
+                                <option value="{{ $value->name }}" wire:key="item-{{ $key }}">
                                     {{ $value->name }}
                                 </option>
                             @endforeach
