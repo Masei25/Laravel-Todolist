@@ -20,9 +20,10 @@ Built with Laravel
 6. Run `php artisan config:cache` so as to sync with the edited environment variables
 7. Run `php artisan migrate:fresh` to migrate the database
 8. Run `npm install`
-9. Run `npm run dev`
-8. Run `php artisan serve`
-9. Hit the URL returned in '8' above in your web browser. Voila!
+9. Run `npm run build`
+10. Run `npm run dev`
+11. Run `php artisan serve`
+12. Hit the URL returned in '8' above in your web browser. Voila!
 
 PS: Again, item '3' above is very important due to some package dependency constraints.
 
