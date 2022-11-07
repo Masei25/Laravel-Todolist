@@ -7,7 +7,7 @@
             <div class="flex justify-end">
                 <button data-bs-toggle="modal" data-bs-target="#addTaskModal"
                     class="p-2 text-xs font-semibold rounded bg-gray-100 border border-black hover:bg-gray-300 px-4 cursor-pointer">
-                    Add Task
+                    Add New Task
                 </button>
             </div>
 

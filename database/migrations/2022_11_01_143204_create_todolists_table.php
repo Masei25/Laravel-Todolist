@@ -14,10 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('todolists', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('task_name');
-            $table->text('description');
-            $table->string('status')->default(\App\Models\Todolist::PENDING);
+            $table->text('end_date');
+            $table->string('status')->default('PENDING');
+            $table->string('assigned_to')->nullable();
             $table->timestamps();
         });
     }

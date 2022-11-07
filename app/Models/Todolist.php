@@ -19,9 +19,11 @@ class Todolist extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'task_name',
-        'description',
+        'end_date',
         'status',
+        'assigned_to',
     ];
 
     public function inProgress()
@@ -43,4 +45,5 @@ class Todolist extends Model
     {
         return $this->hasOne(User::class);
     }
+
 }

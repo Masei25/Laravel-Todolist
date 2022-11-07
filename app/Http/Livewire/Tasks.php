@@ -2,8 +2,12 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\User;
 use Livewire\Component;
 use App\Models\Todolist;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Tasks extends Component
@@ -12,20 +16,21 @@ class Tasks extends Component
     
     public $task;
     
-    public $task_id, $task_name, $description, $status;
-    public $selectedTask = [];
+    public $task_id, $task_name, $date, $status, $assigned_to;
+    public $user, $users;
 
     protected function rules()
     {
         return [
             'task_name' => 'required|string',
-            'description' => 'required|string',
+            'date' => 'required|date'
         ];
     }
 
     public function mount()
     {
-        $this->task = new Todolist();
+        $this->users = User::all();
+        dd($this->users);
     }
 
     public function updated($propertyName)
@@ -37,10 +42,14 @@ class Tasks extends Component
     {
         $validatedData = $this->validate();
 
-        Todolist::create($validatedData);
+        Todolist::create([
+            'user_id' => Auth::user()->id,
+            'task_name' => $validatedData['task_name'],
+            'end_date' => $validatedData['date'],
+        ]);
 
         session()->flash('message','Student Added Successfully');
-        $this->reset();
+        $this->resetInput();
         $this->dispatchBrowserEvent('close-modal');
     }
 
@@ -50,17 +59,20 @@ class Tasks extends Component
         
         $this->task_id = $task->id;
         $this->task_name = $task->task_name;
-        $this->description = $task->description;
+        $this->date = $task->end_date;
 
     }
 
     public function updateTask()
     {
         $validatedData = $this->validate();
+        $assigned = $this->user;
+        $assigned = implode(", ", $assigned);;
 
         Todolist::where('id', $this->task_id)->update([
             'task_name' => $validatedData['task_name'],
-            'description' => $validatedData['description']
+            'end_date' => $validatedData['date'],
+            'assigned_to' => $assigned ?? ''
         ]);
 
         session()->flash('message','Task Updated Successfully');
@@ -93,11 +105,9 @@ class Tasks extends Component
             $this->status = $task->inProgress() : 
                 $this->status = $task->isPending());
     
-        Todolist::where('id', $task_id)->update([
+        $task->update([
             'status' => $this->status
         ]);
-
-        $this->reset();
 
     }
 
@@ -117,10 +127,24 @@ class Tasks extends Component
         $this->reset();
     }
 
-    public function render()
+    public function resetInput() 
     {
-        $tasks = Todolist::orderBy('status', 'DESC')->paginate(15);
+        $this->task_name = '';
+        $this->date = '';
+    }
+
+    public function render(Request $request)
+    {
+        $search = $request->search;
+
+        $tasks = Todolist::query()
+                ->when($search, function(Builder $query) use ($search){
+                    $query->where('task_name', 'like', '%' . $search . '%');
+                })
+                ->orderBy('status', 'desc')
+                ->paginate(10)
+                ->withQueryString();
        
-        return view('livewire.tasks', ['tasks' => $tasks]);
+        return view('livewire.tasks', compact('tasks'));
     }
 }

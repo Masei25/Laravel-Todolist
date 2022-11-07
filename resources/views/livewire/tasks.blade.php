@@ -1,21 +1,16 @@
 <div class="flex flex-col mt-4">
     <div>
-        <form action="{{route('search')}}" method="POST">
+        <form>
             @csrf
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:p b-4">
 
-                <input name="task_name" type="text" class="w-1/2 bg-gray-100 p-2 mt-2 mb-3" placeholder="Search For Task"
+                <input name="search" type="text" value="{{request()->search ?? ''}}" class="w-1/2 bg-gray-100 p-2 mt-2 mb-3" placeholder="Search For Task"
                     required />
                 <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"><i
                         class="fas fa-plus"></i> Search </button>
-
             </div>
-            @if ($errors->has('task_name'))
-                <small class="form-control-feedback" style="color:red">
-                    {{ $errors->first('task_name') }}
-                </small>
-            @endif
         </form>
+
     </div>
     <div class="py-2 my-2 overflow-x-auto sm:-mx-6 sm:px-2 lg:-mx-8 lg:px-8">
         @if (session()->has('message'))
@@ -35,10 +30,13 @@
 
                         <th
                             class="px-2 py-3 border-r text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-100 bg-gray-50">
-                            Description </th>
+                            End Date </th>
                         <th
-                            class="px-2 py-3 border-r text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-100 bg-gray-50">
+                            class="px-2 py-3 border-r text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-100 bg-gray-50">
                             Status </th>
+                        <th
+                            class="px-2 py-3 border-r text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-100 bg-gray-50">
+                            Assigned To </th>
 
                         <th
                             class="px-2 py-3 border-r text-xs text-center font-medium leading-4 tracking-wider text-gray-500 uppercase border-b border-gray-100 bg-gray-50">
@@ -64,7 +62,7 @@
                             </td>
 
                             <td class="py-2 px-2 border-r whitespace-no-wrap border-b border-gray-100">
-                                {{ $task->description ?? '' }}
+                                {{ date('d-m-Y', strtotime($task->end_date)) ?? '' }}
                             </td>
 
                             @if ($task->status == 'COMPLETED')
@@ -104,6 +102,10 @@
                                     </svg>
                                 </td>
                             @endif
+
+                            <td class="py-2 px-2 border-r whitespace-no-wrap border-b text-center border-gray-100">
+                                {{$task->assigned_to ?? ''}}
+                            </td>
 
                             <td
                                 class="text-sm py-2 px-2 border-r leading-5 text-gray-500 whitespace-no-wrap border-b border-gray-100">
@@ -174,10 +176,20 @@
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <label>Task</label>
                         <input name="task_name" type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3"
-                            wire:model.lazy="task_name" />
-                        <label>Description</label>
-                        <textarea name="description" id="" cols="20" rows="10" class="w-full bg-gray-100 p-2 mt-2 mb-3"
-                            wire:model="description"></textarea>
+                            wire:model="task_name" />
+                        @if ($errors->has('task_name'))
+                            <small class="form-control-feedback" style="color:red">
+                                {{ $errors->first('task_name') }}
+                            </small>
+                        @endif
+                        <label>Due Date</label>
+                        <input name="date" type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
+                            wire:model="date" />
+                        @if ($errors->has('date'))
+                            <small class="form-control-feedback" style="color:red">
+                                {{ $errors->first('date') }}
+                            </small>
+                        @endif
                     </div>
                     <div class="px-4 py-3 text-right">
                         <button type="button" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
@@ -205,9 +217,17 @@
                         <label>Task</label>
                         <input name="task_name" type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3"
                             wire:model="task_name" />
-                        <label>Description</label>
-                        <textarea name="description" id="" cols="20" rows="10" class="w-full bg-gray-100 p-2 mt-2 mb-3"
-                            wire:model="description"></textarea>
+                        <label>Due Date</label>
+                        <input name="date" type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
+                            wire:model="date" />
+                        <label>Assign Task</label>
+                        <select multiple name="user[]" wire:model="user" id="user" class="form-control">
+                            @foreach ($users as $key => $value)
+                                <option value="{{ $value->name }}" >
+                                    {{ $value->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="px-4 py-3 text-right">
