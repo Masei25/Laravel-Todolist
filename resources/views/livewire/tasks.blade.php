@@ -4,8 +4,8 @@
             @csrf
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:p b-4">
 
-                <input name="search" type="text" value="{{request()->search ?? ''}}" class="w-1/2 bg-gray-100 p-2 mt-2 mb-3" placeholder="Search For Task"
-                    required />
+                <input name="search" type="text" value="{{ request()->search ?? '' }}"
+                    class="w-1/2 bg-gray-100 p-2 mt-2 mb-3" placeholder="Search For Task" required />
                 <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"><i
                         class="fas fa-plus"></i> Search </button>
             </div>
@@ -104,7 +104,7 @@
                             @endif
 
                             <td class="py-2 px-2 border-r whitespace-no-wrap border-b text-center border-gray-100">
-                                {{$task->assigned_to ?? 'Not Yet Assigned'}}
+                                {{ $task->assigned_to ?? 'Not Yet Assigned' }}
                             </td>
 
                             <td
@@ -112,7 +112,7 @@
                                 <div class="flex justify-evenly">
                                     <button type="button" wire:click="toggleStatus({{ $task->id }})">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-clock cursor-pointer" viewBox="0 0 16 16">
+                                            fill="currentColor" class="bi bi-clock cursor-pointer text-amber-700" viewBox="0 0 16 16">
                                             <path
                                                 d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
                                             <path
@@ -174,22 +174,27 @@
                 <form wire:submit.prevent="saveTask">
                     @csrf
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <label>Task</label>
-                        <input name="task_name" type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3"
-                            wire:model="task_name" />
-                        @if ($errors->has('task_name'))
-                            <small class="form-control-feedback" style="color:red">
-                                {{ $errors->first('task_name') }}
-                            </small>
-                        @endif
-                        <label>Due Date</label>
-                        <input name="date" type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
-                            wire:model="date" />
-                        @if ($errors->has('date'))
-                            <small class="form-control-feedback" style="color:red">
-                                {{ $errors->first('date') }}
-                            </small>
-                        @endif
+                        <div>
+                            <label>Task</label>
+                            <input name="task_name" type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3"
+                                wire:model="task_name" />
+                            @if ($errors->has('task_name'))
+                                <small class="form-control-feedback" style="color:red">
+                                    {{ $errors->first('task_name') }}
+                                </small>
+                            @endif
+                        </div>
+
+                        <div>
+                            <label>Due Date</label>
+                            <input name="date" type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
+                                wire:model="date" />
+                            @if ($errors->has('date'))
+                                <small class="form-control-feedback" style="color:red">
+                                    {{ $errors->first('date') }}
+                                </small>
+                            @endif
+                        </div>
                     </div>
                     <div class="px-4 py-3 text-right">
                         <button type="button" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
@@ -215,20 +220,36 @@
                     @csrf
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <label>Task</label>
-                        <input type="text" class="w-full bg-gray-100 p-2 mt-2 mb-3"
+                        <input type="text" name="task_name" class="w-full bg-gray-100 p-2 mt-2 mb-3"
                             wire:model="task_name" />
+                        @if ($errors->has('task_name'))
+                            <small class="form-control-feedback" style="color:red">
+                                {{ $errors->first('task_name') }}
+                            </small>
+                        @endif
+
                         <label>Due Date</label>
-                        <input type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3"
-                            wire:model="date" />
+                        <input type="date" class="w-full bg-gray-100 p-2 mt-2 mb-3" wire:model="date" />
+                        @if ($errors->has('date'))
+                            <small class="form-control-feedback" style="color:red">
+                                {{ $errors->first('date') }}
+                            </small>
+                        @endif
+
                         <label>Assign Task</label>
                         <select multiple class="form-control" wire:model="user">
-                           
+
                             @foreach ($users as $key => $value)
                                 <option value="{{ $value->name }}">
                                     {{ $value->name }}
                                 </option>
                             @endforeach
                         </select>
+                        @if ($errors->has('user'))
+                            <small class="form-control-feedback" style="color:red">
+                                {{ $errors->first('user') }}
+                            </small>
+                        @endif
                     </div>
 
                     <div class="px-4 py-3 text-right">

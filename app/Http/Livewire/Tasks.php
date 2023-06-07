@@ -13,10 +13,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Tasks extends Component
 {
     use AuthorizesRequests;
-    
-    public $task;
-    
-    public $task_id, $task_name, $date, $status;
+
+    public $task, $task_id, $task_name, $date, $status;
     public $user;
     protected $listeners = ['refreshTask' => '$refresh'];
 
@@ -43,7 +41,7 @@ class Tasks extends Component
     {
         return [
             'task_name' => 'required|string',
-            'date' => 'required|date',
+            'date' => 'required|date|after:today',
             'user' => 'sometimes'
         ];
     }
@@ -65,7 +63,6 @@ class Tasks extends Component
 
         session()->flash('message','Student Added Successfully');
         $this->resetInput();
-        $this->emit('refreshTask');
         $this->dispatchBrowserEvent('close-modal');
     }
 
@@ -85,6 +82,7 @@ class Tasks extends Component
     public function updateTask()
     {
         $validatedData = $this->validate();
+
         $assigned = $this->user;
         is_array($assigned) ? $assigned = implode(", ", $assigned) : $assigned;
 
@@ -96,7 +94,6 @@ class Tasks extends Component
 
         session()->flash('message','Task Updated Successfully');
         $this->resetInput();
-        // $this->emit('refreshTask');
         $this->dispatchBrowserEvent('close-modal');
     }
 
