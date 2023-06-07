@@ -30,6 +30,7 @@ class Tasks extends Component
                 })
                 ->where('user_id', Auth::user()->id)
                 ->orderBy('status', 'desc')
+                ->orderBy('end_date')
                 ->paginate(10)
                 ->withQueryString();
         

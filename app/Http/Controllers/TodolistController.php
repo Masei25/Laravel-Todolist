@@ -36,7 +36,9 @@ class TodolistController extends Controller
 
     public function show($task_name)
     {
-        $tasks = Todolist::where('task_name', 'like', '%' . $task_name . '%')->orderBy('status', 'desc')->paginate(10);
+        $tasks = Todolist::where('task_name', 'like', '%' . $task_name . '%')
+                                ->orderBy('status', 'desc')
+                                ->paginate(10);
         return view('view')->with(['tasks' => $tasks]);
     }
 }
