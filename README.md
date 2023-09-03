@@ -1,4 +1,4 @@
-# TECHQUITY
+# Laravel-Todolist
 
 This Project is a Task Manager App.
 
